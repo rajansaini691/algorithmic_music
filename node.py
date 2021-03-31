@@ -18,10 +18,13 @@ class GraphNode(ABC):
 
     """
     def __init__(self):
-        """
-        Please call me when inheriting
-        """
+        # Contains the next nodes in the graph
         self._edges = []
+
+        # All of these should implement the emit() method, which ultimately
+        # returns a list of instructions. Currently can contain GraphNode
+        # and Note objects (as of 3/30/2021)
+        self._children = []
 
     def add_edge(self, next_node, weight):
         """
@@ -44,24 +47,40 @@ class GraphNode(ABC):
         """
         Randomly select an edge
         """
+        assert(len(self._edges) > 0), "Each node should have at least one outgoing edge"
         next_nodes = [next_node for weight, next_node in self._edges]
         weights = [weight for weight, next_node in self._edges]
         return choices(next_nodes, weights=weights)[0]
 
     @abstractmethod
-    def emit(self):
+    def _get_children(self):
         """
         Should return a list of Note objects. These are played
         simultaneously whenever the current node is played.
         For example, [SimpleNote("C"), SimpleNote("E"), SimpleNote("G")]
+
+        Note: Your list can contain GraphNode objects too, or anything,
+              that implements emit() (as long as emit() returns instructions)
         """
         pass
+
+    def emit(self, time):
+        """
+        Returns a list of instructions
+
+        Parameters:
+            time        The time at which this node should be played
+        """
+        return [x.emit(time) for x in self._get_children()]
 
 class Tonic(GraphNode):
     """
     Let's just assume we're in the key of C for now
     """
-    def emit(self):
+    def __init__(self):
+        super().__init__()
+
+    def _get_children(self):
         chord = ["C3", "E3", "G3"]
         return [SimpleNote(note) for note in chord]
 
@@ -69,8 +88,7 @@ class Tonic(GraphNode):
 if __name__ == "__main__":
     # A very casual testing of our tonic
     t = Tonic()
-    notes = t.emit()
-    print([note.emit(0) for note in notes])
+    print(t.emit(0))
 
     # Test hooking up graphs
     a, b, c = Tonic(), Tonic(), Tonic()
