@@ -26,7 +26,19 @@ def parse(root_node, ticks=50, tempo=120):
 
     return instrs
 
+def fmt_instrs(instrs):
+    """
+    Pretty-prints a list of instructions
+    """
+    out = ""
+    for note in instrs:
+        out += '\n'
+        out += '\n'.join(note)
+        out += '\n'
+    return out
+
 if __name__ == "__main__":
+    # Run a simple end-to-end test
     a = Tonic()
     b = Tonic()
     c = Tonic()
@@ -35,4 +47,4 @@ if __name__ == "__main__":
     b.add_edge(a, 3)
     c.add_edge(a, 3)
 
-    print(parse(a, ticks=3))
+    print(fmt_instrs(parse(a, ticks=3)))
