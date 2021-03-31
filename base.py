@@ -25,8 +25,8 @@ MVP Architecture:
   Let's say we have the following graph:
      I <-----------|
      |---> IV ---> V
-     v     |
-     III --
+     v     ^
+     III __|
    
    Now, each node will want to have its own
    set of "instructions" to emit. We could
@@ -57,25 +57,11 @@ class GraphNode(ABC):
     An element of the composition graph thing
     """
     @abstractmethod
-    def emit():
+    def emit(self):
         """
         Should return a list of Note objects. These are played
         simultaneously whenever the current node is played.
-        For example, 
-        """
-        pass
-
-class Note(ABC):
-    """
-    Corresponds to a single note instruction, e.g.
-    @  0   3.5 SineEnv 0.3 260   .011 .2 0.0
-    """
-    @abstractmethod
-    def emit():
-        # TODO Word this better
-        """
-        Should return a string converting the note's data to its allolib
-        format
+        For example, [SimpleNote("C"), SimpleNote("E"), SimpleNote("G")]
         """
         pass
 
@@ -83,5 +69,5 @@ class Tonic(GraphNode):
     """
     Let's just assume we're in the key of C for now
     """
-    def emit():
+    def emit(self):
         return []
