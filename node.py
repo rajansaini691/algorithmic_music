@@ -20,5 +20,12 @@ class Tonic(GraphNode):
     Let's just assume we're in the key of C for now
     """
     def emit(self):
-        chord = ["C", "E", "G"]
-        return [SimpleNote()]
+        chord = ["C3", "E3", "G3"]
+        return [SimpleNote(note) for note in chord]
+
+
+if __name__ == "__main__":
+    # A very casual testing of our tonic
+    t = Tonic()
+    notes = t.emit()
+    print([note.emit(0) for note in notes])
