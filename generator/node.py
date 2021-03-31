@@ -77,11 +77,32 @@ class Tonic(GraphNode):
     """
     Let's just assume we're in the key of C for now
     """
-    def __init__(self):
-        super().__init__()
-
     def _get_children(self):
         chord = ["C3", "E3", "G3"]
+        return [SimpleNote(note) for note in chord]
+
+class SuperTonic(GraphNode):
+    """
+    Let's just assume we're in the key of C for now
+    """
+    def _get_children(self):
+        chord = ["D3", "F3", "A3"]
+        return [SimpleNote(note) for note in chord]
+
+class SubDominant(GraphNode):
+    """
+    Let's just assume we're in the key of C for now
+    """
+    def _get_children(self):
+        chord = ["F3", "A3", "C4"]
+        return [SimpleNote(note) for note in chord]
+
+class Dominant(GraphNode):
+    """
+    Let's just assume we're in the key of C for now
+    """
+    def _get_children(self):
+        chord = ["G3", "B3", "C4"]
         return [SimpleNote(note) for note in chord]
 
 

@@ -3,7 +3,7 @@ Probably shouldn't be called parser.py...
 
 Traverse a graph of GraphNodes and generate stuff
 """
-from node import GraphNode, Tonic
+from generator.node import GraphNode, Tonic
 from note import Note
 
 # Maybe make it a class? IDK
