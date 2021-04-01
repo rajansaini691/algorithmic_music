@@ -1,6 +1,6 @@
 
 from abc import ABC, abstractmethod
-from note import SimpleNote
+from generator.note import SimpleNote
 from random import choices
 
 class GraphNode(ABC):
@@ -17,14 +17,21 @@ class GraphNode(ABC):
                 (we normalize them).
 
     """
-    def __init__(self):
-        # Contains the next nodes in the graph
+    def __init__(self, final=False):
+        """
+        Parameters:
+            final       Is this node a halting state? (The machine only halts
+                        at a halting state)
+        """
+        # Contains references to the next nodes in the graph
         self._edges = []
 
         # All of these should implement the emit() method, which ultimately
         # returns a list of instructions. Currently can contain GraphNode
         # and Note objects (as of 3/30/2021)
         self._children = []
+
+        self._final = final
 
     def add_edge(self, next_node, weight):
         """
@@ -64,55 +71,56 @@ class GraphNode(ABC):
         """
         pass
 
-    def emit(self, time):
+    def emit(self, time, duration):
         """
         Returns a list of instructions
 
         Parameters:
-            time        The time at which this node should be played
+            time        The time at which this node should be played (seconds)
+            duration    For how long should the node be played? (seconds)
         """
-        return [x.emit(time) for x in self._get_children()]
+        return [x.emit(time, duration) for x in self._get_children()]
 
-class Tonic(GraphNode):
-    """
-    Let's just assume we're in the key of C for now
-    """
-    def _get_children(self):
-        chord = ["C3", "E3", "G3"]
-        return [SimpleNote(note) for note in chord]
+    @property
+    def final(self):
+        return self._final
 
-class SuperTonic(GraphNode):
+# TODO Could inherit from Chord for conciseness
+class Triad(GraphNode):
     """
-    Let's just assume we're in the key of C for now
+    Visiting this node generates a triad
     """
+    def __init__(self, root, third, fifth, final=False):
+        """
+        Play a triad consisting of the three notes
+        """
+        super().__init__(final=final)
+        chord = [root, third, fifth]
+        self._children = [SimpleNote(note) for note in chord]
+        
     def _get_children(self):
-        chord = ["D3", "F3", "A3"]
-        return [SimpleNote(note) for note in chord]
+        return self._children
 
-class SubDominant(GraphNode):
-    """
-    Let's just assume we're in the key of C for now
-    """
-    def _get_children(self):
-        chord = ["F3", "A3", "C4"]
-        return [SimpleNote(note) for note in chord]
 
-class Dominant(GraphNode):
+class Chord(GraphNode):
     """
-    Let's just assume we're in the key of C for now
+    Visiting this node plays any chord
     """
+    def __init__(self, chord, final=False):
+        super().__init__()
+        self._children = [SimpleNote(note) for note in chord]
+        
     def _get_children(self):
-        chord = ["G3", "B3", "C4"]
-        return [SimpleNote(note) for note in chord]
+        return self._children
 
 
 if __name__ == "__main__":
     # A very casual testing of our tonic
-    t = Tonic()
-    print(t.emit(0))
+    t = Triad("C3", "E3", "G3")
+    print(t.emit(0, 0))
 
     # Test hooking up graphs
-    a, b, c = Tonic(), Tonic(), Tonic()
+    a, b, c = Triad("C3", "E3", "G3"), Triad("C3", "E3", "G3"), Triad("C3", "E3", "G3")
     t.add_edge(c, 3)
     t.add_edge(b, 3)
     t.add_edge(a, 3)

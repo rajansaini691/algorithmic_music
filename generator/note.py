@@ -45,8 +45,10 @@ class Note(ABC):
         return midi_note
 
 
+    # TODO Rename duration to ticklength, since the duration is more of a
+    # suggestion
     @abstractmethod
-    def emit(self, time):
+    def emit(self, time, duration):
         # TODO Word this better
         """
         Should return a string converting the note's data to its allolib
@@ -54,6 +56,7 @@ class Note(ABC):
 
         Parameters:
             time            Time (seconds) at which the note should be played
+            duration    For how long should the node be played? (seconds)
         """
         pass
 
@@ -76,8 +79,8 @@ class SimpleNote(Note):
 
         self._freq = self._mid2freq(pitch)
 
-    def emit(self, time):
-        return f"@  {time}  3.5 SineEnv 0.3 {self._freq}   .011 .2 0.0"
+    def emit(self, time, duration):
+        return f"@  {time}  {duration} SineEnv 0.3 {self._freq}   .011 .5 0.0"
 
 
 if __name__ == "__main__":

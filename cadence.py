@@ -1,14 +1,41 @@
 """
-Simple ii|IV - V - I cadence
+Simple iii - ii|IV - V - I cadence
 """
-from generator.node import Tonic
+from generator.node import Triad
+from generator.parser import fmt_instrs, parse
 
-a = Tonic()
-b = Tonic()
-c = Tonic()
-a.add_edge(b, 3)
-a.add_edge(c, 3)
-b.add_edge(a, 3)
-c.add_edge(a, 3)
+"""
+Create one node per chord.
+"""
+# No matter how crazy things get, we always end on the tonic
+I = Triad("C4", "E4", "G4", final=True)     
+ii = Triad("D4", "F4", "A4")
+iii = Triad("E4", "G4", "B4")
+IV = Triad("F4", "A4", "C5")
+V = Triad("G4", "B4", "D5")
+vi = Triad("A4", "C5", "E5")
 
-print(fmt_instrs(parse(a, ticks=3)))
+"""
+Add edges between chords (what resolves to what?)
+"""
+# Have the I chord go to iii
+I.add_edge(iii, 1)
+
+# Not sure what to do with the vi, chord; let's go to iii for now
+vi.add_edge(iii, 1)
+
+# Give the iii chord an equal chance of going to ii and IV
+iii.add_edge(ii, 1/2)     
+iii.add_edge(IV, 1/2)
+
+# ii and IV both progress to V
+IV.add_edge(V, 1)
+ii.add_edge(V, 1)
+
+# Dominant cadence, baby!
+V.add_edge(I, 1/2)
+
+# Deceptive cadence?
+V.add_edge(vi, 1/2)
+
+print(fmt_instrs(parse(I, ticks=9, tempo=1/2)))
