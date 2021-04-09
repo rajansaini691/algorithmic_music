@@ -2,7 +2,7 @@
 Simple iii - ii|IV - V - I cadence
 """
 from generator.node import Triad
-from generator.parser import fmt_instrs, parse
+from generator.parser import fmt_instrs, parse_with_rhythm
 
 """
 Create one node per chord.
@@ -38,4 +38,4 @@ V.add_edge(I, 1/2)
 # Deceptive cadence?
 V.add_edge(vi, 1/2)
 
-print(fmt_instrs(parse(I, ticks=9, tempo=1/2)))
+print(fmt_instrs(parse_with_rhythm(I, tempo=120)))
