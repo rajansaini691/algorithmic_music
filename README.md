@@ -14,6 +14,7 @@ State machines seem to represent many music-theoretical constructs quite natural
 
 ## Files
 `idea.md` - My initial stream-of-consciousness
+
 `generator/` - Contains the behind-the-scenes stuff (graph aggregation and codegen)
 
 `cadence.py` - A fully-functional example

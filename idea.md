@@ -1,6 +1,3 @@
-## Disclaimer
-This is probably completely useless, and the code will probably be quite poorly-written, but I wanted to see if it could be done.
-
 ## Main idea
 Have a composition or accompaniment be partially-encoded into a graph with weighted edges, where weights represent probabilities of taking a transition.
 
