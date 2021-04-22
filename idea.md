@@ -30,6 +30,8 @@ Now, each node will want to have its own set of "instructions" to emit. We could
 A note has several properties, which are synth-specific. Custom notes should inherit from this base, and it should also have an emit method
 
 ## Nice-haves
-  - Handle swing
-  - Abstract key from harmonic function (when the given node is a chord rather than a note)
-  - Hold notes between ticks
+  [ ] Emit comments; would be really nice!
+  [ ] Handle swing
+  [x] Abstract key from harmonic function (when the given node is a chord rather than a note)
+  [ ] Hold notes between ticks (this is kind of solved by separating harmony from rhythm, idk)
+  [ ] Phrasing! We can do this by using the rhythm generation tool

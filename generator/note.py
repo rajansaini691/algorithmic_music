@@ -80,7 +80,16 @@ class SimpleNote(Note):
         self._freq = self._mid2freq(pitch)
 
     def emit(self, time, duration):
-        return f"@  {time}  {duration} SineEnv 0.3 {self._freq}   .011 .5 0.0"
+        # TODO releaseTime is currently set to 0.5
+        return f"@ {time} {duration} OscEnv 0.8 {self._freq} .01 0.1 1.0 1.0 1.0 2.1"
+
+
+class Kick(Note):
+    """
+    Just a kick drum :)
+    """
+    def emit(self, time, duration):
+        return f"@ {time} 0.05 FM 100  0.4  0.001 0.05  0.8  10 0 0  1.65  3.31  0 0 0 0 0"
 
 
 if __name__ == "__main__":

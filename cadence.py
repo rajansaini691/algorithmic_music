@@ -3,6 +3,7 @@ Simple iii - ii|IV - V - I cadence
 """
 from generator.node import Triad
 from generator.parser import fmt_instrs, parse_with_rhythm
+from generator.note import Kick
 
 """
 Create one node per chord.
@@ -39,3 +40,10 @@ V.add_edge(I, 1/2)
 V.add_edge(vi, 1/2)
 
 print(fmt_instrs(parse_with_rhythm(I, tempo=120)))
+
+"""
+Add a kick drum (API will definitely change here to integrate with graph)
+"""
+k = Kick()
+for i in range(6 * 16):
+    print(k.emit(i * 60 / 120, 0.01))
