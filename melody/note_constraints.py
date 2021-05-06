@@ -10,6 +10,7 @@ Postcondition:
 """
 from melody_types import *
 from direction_filler import fill_directions
+from scale import Scale
 import random
 
 def _flip(weight):
@@ -31,7 +32,7 @@ def _expanding_method(song):
     into account.
     """
     for phrase in song.phrases:
-        # Get first landing note in each phrase
+        # Get the phrase's first landing note
         first_landing_note = None
         for pe in phrase.phrase_elements:
             if type(pe) == LandingNote:
@@ -75,16 +76,15 @@ def _expanding_method(song):
 
                 if add_above:
                     add_above_cooldown = 1
-                    high += 1
+                    high = phrase.scale.step_up(high)
                     pe.new_note = high
 
                 if add_below:
                     add_below_cooldown = 1
-                    low -= 1
+                    low = phrase.scale.step_down(low)
                     pe.new_note = low
                 
                 pe.scale_constraints = [low, high]
-                print([low, high])
 
 
 
@@ -94,9 +94,9 @@ def add_note_constraints(song):
 
 
 if __name__ == "__main__":
-    scale = Scale()
-    first_phrase = Phrase(phrase_elements=[Segment(6), LandingNote(duration=2, pitch='A4'), Rest(1), Segment(3)], scale=scale)
-    second_phrase = Phrase(phrase_elements=[Segment(6), LandingNote(duration=2, pitch='F4'), Rest(1), Segment(2)], scale=scale)
+    c_pentatonic = Scale('C', [0, 3, 5, 7, 10])
+    first_phrase = Phrase(phrase_elements=[Segment(6), LandingNote(duration=2, pitch='Eb4'), Rest(1), Segment(3)], scale=c_pentatonic)
+    second_phrase = Phrase(phrase_elements=[Segment(6), LandingNote(duration=2, pitch='F4'), Rest(1), Segment(2)], scale=c_pentatonic)
     phrases = [first_phrase, second_phrase]
     song = Song(phrases = phrases)
 

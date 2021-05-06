@@ -5,6 +5,7 @@ is unwieldy to go through, please split it up.
 from dataclasses import dataclass
 import enum
 from helpers import note_name_to_midi
+from scale import Scale
 
 # The direction the notes in a segment should go
 class SegmentDirection(enum.Enum):
@@ -27,11 +28,6 @@ class Dynamic(enum.Enum):
 class Articulation(enum.Enum):
     STACCATO = 1
     TENUTO = 2
-
-@dataclass
-class Scale:
-    # TODO Stub
-    pass
 
 @dataclass
 class PhraseElement:
