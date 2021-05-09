@@ -6,7 +6,7 @@ Precondition:
     Each segment has a direction assigned
 
 Postcondition:
-    Each segment has an assigned set of scale constraints
+    Each segment has an assigned scale width and set of scale constraints
 """
 from melody_types import *
 from direction_filler import fill_directions
@@ -42,6 +42,7 @@ def _expanding_method(song):
         assert(first_landing_note != None), "There should be at least one landing note per phrase"
 
         low = high = first_landing_note
+        scale_width = 1
 
         # How many segments to skip before adding another new note
         # in the same direction
@@ -78,13 +79,16 @@ def _expanding_method(song):
                     add_above_cooldown = 1
                     high = phrase.scale.step_up(high)
                     pe.new_note = high
+                    scale_width += 1
 
                 if add_below:
                     add_below_cooldown = 1
                     low = phrase.scale.step_down(low)
                     pe.new_note = low
+                    scale_width += 1
                 
                 pe.scale_constraints = [low, high]
+                pe.scale_width = scale_width
 
 
 

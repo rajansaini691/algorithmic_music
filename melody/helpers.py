@@ -35,5 +35,19 @@ def note_name_to_midi(note_name):
         return midi_note
 
 
+def midi_to_note_name(midi_note, scale=None):
+    """
+    Convert a MIDI note number to its human-readable name
+    """
+    # TODO Use scale to determine which enharmonic to use
+    NOTES = 'C C# D Eb E F F# G Ab A Bb B'.split(' ')
+    n = midi_note % 12
+    note = NOTES[n]
+    octave = midi_note // 12 - 1
+    return f"{note}{octave}"
+
+
 if __name__ == "__main__":
-    print(note_name_to_midi("C7"))
+    test = 'A0 B0 C4 D5 C#3 Ab8'.split(' ')
+    for x in test:
+        assert(x == midi_to_note_name(note_name_to_midi(x)))

@@ -40,11 +40,11 @@ class Rest(PhraseElement):
 @dataclass
 class Note:
     # TODO Dynamic stuff
-    articulation: Articulation
-    duration: int
-    importance: int     # [0, 1]
-    new: bool
     pitch: int
+    articulation: Articulation = None
+    duration: int = 2
+    importance: int = 0.5   # [0, 1]
+    new: bool = False
     
     def get_final_dynamic():
         # TODO Stub
@@ -69,6 +69,7 @@ class Segment(PhraseElement):
     new_note: int = None        # If the segment contains a new/special note, stores its pitch
     notes: list[Note] = None
     scale_constraints: list[int] = None    # Pair, [low, high]
+    scale_width: int = None    # Number of note pitches allowed in segment, based on constraints
     tempo: int = None
     tempo_change: int = None # TODO Change to an enum
 
