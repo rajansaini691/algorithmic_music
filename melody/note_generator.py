@@ -7,12 +7,37 @@ from note_filler import fill_notes
 from direction_filler import fill_directions
 from helpers import midi_to_note_name
 
+# TODO Put in helpers.py
+def mid2freq(pitch):
+    assert(0 <= pitch <= 127)
+    return 2**((pitch - 69)/12) * 440
+
 def song_to_allolib(song):
     """
     Generate allolib instructions from the song
+    Right now, use with SineEnv module
+    @  0.0  2.0 SineEnv 0.3 261.6255653005986   .011 .5 0.0
     """
-    # TODO Implement
-    pass
+    out = ""
+    time = 0
+    multiplier = 0.1875    # TODO Add a tempo/time sig parameter. This is a lazy hack for a demo
+    for phrase in song.phrases:
+        for token in phrase.phrase_elements:
+            if type(token) == Rest:
+                out += f"# Rest for {token.duration * multiplier} half-beats\n"
+                time += token.duration * multiplier
+            if type(token) == Segment:
+                for note in token.notes:
+                    out += f"# {midi_to_note_name(note.pitch)}\n"
+                    out += f"@ {time} {note.duration * multiplier} SineEnv 0.3 {mid2freq(note.pitch)} 0.11 0.5 0.0\n\n"
+                    time += note.duration * multiplier
+            if type(token) == LandingNote:
+                out += f"# {midi_to_note_name(token.pitch)}\n"
+                out += f"@ {time} {token.duration * multiplier} SineEnv 0.6 {mid2freq(token.pitch)} 0.11 0.5 0.0\n\n"
+                time += token.duration * multiplier
+    # FIXME Debugging hack
+    return out 
+ 
 
 def song_to_string(song):
     """
@@ -24,13 +49,16 @@ def song_to_string(song):
             if type(token) == Rest:
                 out += "_\t" * token.duration
             if type(token) == Segment:
-                notes = ''.join(f"{midi_to_note_name(note.pitch)}\t" for note in token.notes)
-                print(f"len: {len(token.notes)}, duration: {token.duration//2}")
+                notes = ''.join(f"{note.to_string()}\t" for note in token.notes)
                 notes = notes if len(token.notes) == token.duration//2 else "*\t" * token.duration
                 out += notes
+
+                low, high = token.scale_constraints
+                constraints = f"[{midi_to_note_name(low)}, {midi_to_note_name(high)}]"
+                out += "\t" + constraints
             if type(token) == LandingNote:
-                out += "|\t" * token.duration
-        out += '\n'
+                out += midi_to_note_name(token.pitch) + "\t" + "|\t" * (token.duration - 1)
+            out += '\n'
 
     return out
 
@@ -45,4 +73,4 @@ if __name__ == "__main__":
     add_note_constraints(song)
     fill_notes(song)
 
-    print(song_to_string(song))
+    print(song_to_allolib(song))
