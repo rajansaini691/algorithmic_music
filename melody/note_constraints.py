@@ -12,6 +12,7 @@ from melody_types import *
 from direction_filler import fill_directions
 from scale import Scale
 import random
+from helpers import midi_to_note_name
 
 def _flip(weight):
     """
@@ -41,25 +42,32 @@ def _expanding_method(song):
 
         assert(first_landing_note != None), "There should be at least one landing note per phrase"
 
-        low = high = first_landing_note
+        # TODO Don't always start from below 
+        # Get initial constraints using first segment length
+        first_segment_length = 0
+        for pe in phrase.phrase_elements:
+            if type(pe) == Segment:
+                first_segment_length = pe.duration // 2
+                break
+
+        high = first_landing_note
+        low = phrase.scale.skip_down(first_landing_note, first_segment_length - 1)
         scale_width = 1
 
         # How many segments to skip before adding another new note
         # in the same direction
-        add_below_cooldown = add_above_cooldown = 0
+        add_below_cooldown = add_above_cooldown = 1
 
         # Create constraints
         for pe in phrase.phrase_elements:
             if type(pe) == Segment:
                 add_below = add_above = False
-                if pe.direction == SegmentDirection.UP:
+                if (pe.direction == SegmentDirection.UP 
+                    or pe.direction == SegmentDirection.UPDOWN):
                     add_below |= _flip(0.4)
-                if pe.direction == SegmentDirection.DOWN:
+                if (pe.direction == SegmentDirection.DOWN
+                    or pe.direction == SegmentDirection.DOWNUP):
                     add_above |= _flip(0.4)
-                if pe.direction == SegmentDirection.DOWNUP:
-                    add_above |= _flip(0.4)
-                if pe.direction == SegmentDirection.UPDOWN:
-                    add_below |= _flip(0.4)
 
                 # Require cooldown to be zero before adding a new note
                 add_below &= add_below_cooldown == 0
@@ -71,10 +79,7 @@ def _expanding_method(song):
                 if add_above_cooldown > 0:
                     add_above_cooldown -= 1
 
-                # TODO Update the constraints, note that a new note will be added
-                # (above or below), add a field in Segment to reflect the new note,
-                # update the cooldown
-
+                # Add the constraints
                 if add_above:
                     add_above_cooldown = 1
                     high = phrase.scale.step_up(high)
