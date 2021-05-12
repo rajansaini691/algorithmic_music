@@ -20,7 +20,7 @@ from generator.rhythm import rhythmic_phrase
 # Maybe make it a class? IDK
 # TODO Would be cool to figure out a way to deal with subdivisions
 # TODO Change name from parse() to generate()
-def parse(root_node, ticks=50, tempo=120):
+def parse(root_node, ticks=50, tempo=120, delay=0):
     """
     Traverses a graph of nodes and returns a list of instructions
 
@@ -29,11 +29,13 @@ def parse(root_node, ticks=50, tempo=120):
         ticks       Each tick, we visit a node and generate an instruction.
                     The tick represents the smallest unit of time.
         tempo       Number of ticks per second
+        delay       Number of beats to wait
     """
+    # FIXME THis function is broken; reset it to a working commit
     assert(ticks > 1), "How can we generate anything without any ticks?"
     curr_node = root_node
     instrs = []
-    t = 0
+    t = delay / tempo
     while True:
         instrs += [curr_node.emit(t / tempo, 1 / tempo)]
 
@@ -45,7 +47,7 @@ def parse(root_node, ticks=50, tempo=120):
 
     return instrs
 
-def parse_with_rhythm(root_node, min_num_phrases=3, tempo=60):
+def parse_with_rhythm(root_node, min_num_phrases=3, tempo=60, delay=0):
     """
     Slightly more complicated implementation of parse() above,
     with rhythmic stuff
@@ -53,14 +55,15 @@ def parse_with_rhythm(root_node, min_num_phrases=3, tempo=60):
     Parameters:
         tempo                   Beats per minute (2 measures per chord change, or 8 beats per chord change)
         min_num_phrases         Minimum number of phrases to generate (could be more if we get a deceptive cadence)
+        delay                   Number of beats to delay by
     """
     instrs = []
     phrase = rhythmic_phrase()
     curr_node = root_node
 
-    t = 0
     phrases_generated = 0
     secs_per_note = 60 / (2 * tempo)
+    t = delay * secs_per_note
 
     while phrases_generated < min_num_phrases or not curr_node.final:
         for measure in phrase:
@@ -69,11 +72,11 @@ def parse_with_rhythm(root_node, min_num_phrases=3, tempo=60):
                 t += note_len
 
             curr_node = curr_node.next()
-
+        
         phrases_generated += 1
 
     # Curr node always ends on the tonic
-    instrs += [curr_node.emit(secs_per_note * t, secs_per_note * 4 / 4)]
+    instrs += [curr_node.emit(secs_per_note * t, secs_per_note)]
 
     return instrs
 
@@ -88,6 +91,7 @@ def fmt_instrs(instrs):
         out += '\n'.join(note)
         out += '\n'
     return out
+
 
 if __name__ == "__main__":
     # Run a simple end-to-end test
