@@ -4,7 +4,7 @@ is unwieldy to go through, please split it up.
 """
 from dataclasses import dataclass
 import enum
-from helpers import note_name_to_midi
+from helpers import note_name_to_midi, midi_to_note_name
 from scale import Scale
 
 # The direction the notes in a segment should go
@@ -49,6 +49,12 @@ class Note:
     def get_final_dynamic():
         # TODO Stub
         return 1
+
+    def to_string(self):
+        note = midi_to_note_name(self.pitch)
+        star = "*" if self.new else ""
+        return note + star
+        
 
 @dataclass
 class LandingNote(PhraseElement):
