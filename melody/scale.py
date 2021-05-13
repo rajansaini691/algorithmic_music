@@ -56,7 +56,7 @@ class Scale:
             important to you.
         """
         assert(len(scale_degrees) > 0), "A scale needs at least one note"
-        assert(scale_degrees[0] == 0), "Make sure your scale's first note is the tonic (0)"
+        assert(not same_up_down or scale_degrees[0] == 0), "Make sure your scale's first note is the tonic (0)"
         
         if same_up_down:
             assert(all(x < y for x, y in zip(scale_degrees[0:], scale_degrees[1:]))), """
@@ -70,7 +70,7 @@ class Scale:
             assert(all(x > y for x, y in zip(down[0:], down[1:]))), """
                 Make sure descending scale is strictly decreasing 
             """
-        assert(not octave_duplication or scale_degrees[-1] < 12), """
+        assert(not octave_duplication or not same_up_down or scale_degrees[-1] < 12), """
             If you're duplicating at the octave, your scale needs to
             fit within one octave.
         """
