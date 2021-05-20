@@ -5,7 +5,7 @@ Responsible for parsing a text file and converting to a Song object
 Example:
     Key: C
 
-    Scale: 0 -> 3 -> 5 -> 8 -> 10           # Only this guy implemented for now
+    Scale: 0 -> 3 -> 5 -> 8 -> 10           # Implement this first
         or
     Scale: Major/major
         or
