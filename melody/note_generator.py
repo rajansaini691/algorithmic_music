@@ -20,8 +20,8 @@ def song_to_allolib(song):
     """
     out = ""
     time = 0
-    multiplier = 0.1875    # TODO Add a tempo/time sig parameter. This is a lazy hack for a demo
     for phrase in song.phrases:
+        multiplier = phrase.atomic_unit * phrase.time_signature[1] / phrase.tempo * 60
         for token in phrase.phrase_elements:
             if type(token) == Rest:
                 out += f"# Rest for {token.duration * multiplier} half-beats\n"

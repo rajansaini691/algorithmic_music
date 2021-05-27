@@ -76,14 +76,15 @@ class Segment(PhraseElement):
     notes: list[Note] = None
     scale_constraints: list[int] = None    # Pair, [low, high]
     scale_width: int = None    # Number of note pitches allowed in segment, based on constraints
-    tempo: int = None
-    tempo_change: int = None # TODO Change to an enum
 
 @dataclass
 class Phrase:
     # TODO Add option to inherit scale from Song
     scale: Scale
     phrase_elements: list[PhraseElement]
+    time_signature: list[int]  # Should be [upper, lower]
+    atomic_unit: float      # Fraction of a whole note
+    tempo: int = 120
 
 @dataclass
 class Song:
