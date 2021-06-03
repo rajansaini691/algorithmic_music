@@ -20,6 +20,20 @@ def _fill_directions_random(song):
         for pe in phrase.phrase_elements:
             if type(pe) == Segment:
                 pe.direction = random.choice(list(SegmentDirection))
+
+# TODO Have user pass weights
+def _fill_directions_weighted(song):
+    """
+    Randomly gives directions, but with a preference for certain motions
+    """
+    directions = [SegmentDirection.UP, SegmentDirection.DOWN, SegmentDirection.UPDOWN,
+            SegmentDirection.DOWNUP, SegmentDirection.STRAIGHT]
+    weights = [1, 1, 4, 4, 0.5]
+    normalized_weights = [x / sum(weights) for x in weights]
+    for phrase in song.phrases:
+        for pe in phrase.phrase_elements:
+            if type(pe) == Segment:
+                pe.direction = random.choices(directions, weights=weights, k=1)[0]
     
 
 def fill_directions(song):
@@ -35,7 +49,7 @@ def fill_directions(song):
 
     # TODO Have the user pass in a string or enum that determines
     # the filling technique, then add a switch here
-    _fill_directions_random(song)
+    _fill_directions_weighted(song)
 
     # Assert postcondition
     for phrase in song.phrases:

@@ -46,8 +46,54 @@ def midi_to_note_name(midi_note, scale=None):
     octave = midi_note // 12 - 1
     return f"{note}{octave}"
 
+def chord_name_to_notes(chord_name, tonic=None, major=False, minor=False):
+    """
+    Finds the corresponding triad for the provided chord name. If no tonic
+    is passed, this function will return a list of offsets from the tonic
+    (so [0, 4, 7] for a major chord, for example). Otherwise, if a tonic
+    is passed, finds the chord above the tonic (so I for 'C4' is
+    ['C4', 'E4', 'G4']).
+
+    major and minor refer to the SCALE, not the chord itself, so that
+    the III, VI, and VII chords are returned correctly.
+    """
+    assert(major != minor)
+    major_pattern = [0, 4, 7]
+    minor_pattern = [0, 3, 7]
+    major_scale = [0, 2, 4, 5, 7, 9, 11]
+    minor_scale = [0, 2, 3, 5, 7, 8, 10]
+    chord_degrees = None
+
+    # Major
+    if 'I' in chord_name or 'V' in chord_name:
+        major_chord_to_scale_degree = {
+                'I': 1, 'II': 2, 'III': 3, 'IV': 4,
+                'V': 5, 'VI': 6, 'VII': 7}
+        degree = major_chord_to_scale_degree[chord_name]
+        offset = major_scale[degree-1] if major else minor_scale[degree-1]
+        chord_degrees = [offset + x for x in major_pattern]
+
+
+    if 'i' in chord_name or 'v' in chord_name:
+        minor_chord_to_scale_degree = {
+                'i': 1, 'ii': 2, 'iii': 3, 'iv': 4,
+                'v': 5, 'vi': 6, 'vii': 7}
+        degree = minor_chord_to_scale_degree[chord_name]
+        offset = major_scale[degree-1] if major else minor_scale[degree-1]
+        chord_degrees = [offset + x for x in minor_pattern]
+
+
+    if tonic is not None:
+        return [x + tonic for x in chord_degrees]
+    else:
+        return chord_degrees
+
 
 if __name__ == "__main__":
     test = 'A0 B0 C4 D5 C#3 Ab8'.split(' ')
     for x in test:
         assert(x == midi_to_note_name(note_name_to_midi(x)))
+    test = 'I'
+    notes = chord_name_to_notes(test, note_name_to_midi('C4'), minor=True)
+    for x in notes:
+        print(midi_to_note_name(x))

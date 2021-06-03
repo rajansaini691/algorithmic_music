@@ -1,6 +1,7 @@
 
 """
 Responsible for parsing a text file and converting to a Song object
+    (could also try looking up ABC notation as well)
 
 Example:
     Key: C

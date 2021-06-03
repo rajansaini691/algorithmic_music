@@ -7,6 +7,7 @@ from scale import Scale
 from melody_types import *
 from direction_filler import fill_directions
 from note_constraints import add_note_constraints
+import random
 
 
 def _generate_possible_notes(num_notes, constraints, scale, direction):
@@ -104,17 +105,16 @@ def _fill_notes_stepwise(song):
             if type(segment) != Segment:
                 continue
             
-            num_notes = segment.duration / 2
+            num_notes = segment.duration
 
             potential_sequences = _generate_possible_notes(
                     num_notes, segment.scale_constraints,
                     phrase.scale, segment.direction)
+            assert(len(potential_sequences) > 0)
 
-            # TODO Pick a sequence at random
-            # TODO Assert that len(potential_sequences) > 0 and get rid of check
-            note_pitches = potential_sequences[0] if len(potential_sequences) > 0 else []
+            note_pitches = random.choice(potential_sequences)
 
-            segment.notes = [Note(pitch, new=pitch==segment.new_note) for pitch in note_pitches]
+            segment.notes = [Note(pitch, new=pitch==segment.new_note, duration=1) for pitch in note_pitches]
 
 
 # TODO Add a switch, so different algorithms can be chosen by the user

@@ -174,6 +174,13 @@ class Scale:
                 node = node.note_below
 
         return node.pitch
+    
+    def tonic(self):
+        """
+        Return the lowest possible tonic of the scale
+        """
+        return self._scale_notes[0].pitch
+        
 
 
 class SimplerScale(Scale):
@@ -228,11 +235,21 @@ class SimplerScale(Scale):
         """
         return self._step_helper(current_note, self._descending_scale)
 
+    # TODO Debug
     def skip_up(self, current_note, n):
-        return self._ascending_scale.skip_up(current_note, n)
-
+        if n == 0:
+            return {current_note}
+        
+        # TODO Clean up
+        return set().union(*[self.skip_up(next_note, n - 1) for next_note in self.step_up(current_note)])
+        
+    # TODO Implement
     def skip_down(self, current_note, n):
-        return self.descending_scale.skip_down(current_note, n)
+        if n == 0:
+            return {current_note}
+        
+        # TODO Clean up
+        return set().union(*[self.skip_down(next_note, n - 1) for next_note in self.step_down(current_note)])
 
 if __name__ == "__main__":
     s = Scale('C', [0, 2, 4, 5, 7, 9, 11])
@@ -277,3 +294,7 @@ if __name__ == "__main__":
     assert(C.step_down(67) == {65}) # G -> F
     assert(C.step_up(64) == {65})   # B -> C
     assert(C.step_down(65) == {64}) # C -> B
+    assert(C.skip_up(60, 2) == {64}) # C -> E
+    assert(C.skip_up(60, 3) == {65}) # C -> F
+    assert(C.skip_up(60, 4) == {67}) # C -> G
+    assert(C.skip_up(60, 10) == {77})

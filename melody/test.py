@@ -7,7 +7,7 @@ from note_filler import fill_notes
 from direction_filler import fill_directions
 from note_generator import song_to_string, song_to_allolib
 
-blues_scale = Scale('F', [0, 3, 5, 7, 10])
+blues_scale = Scale('F', [0, 3, 5, 6, 7, 10])
 
 # Example user code
 """
